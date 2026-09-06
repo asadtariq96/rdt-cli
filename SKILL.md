@@ -1,8 +1,8 @@
 ---
 name: rdt-cli
 description: Use rdt-cli for ALL Reddit operations — browsing feeds, reading posts, searching, viewing users, upvoting, saving, and subscribing. Invoke whenever the user requests any Reddit interaction.
-author: jackwener
-version: "0.4.0"
+author: asadtariq96
+version: "0.4.3"
 tags:
   - reddit
   - rdt
@@ -18,12 +18,12 @@ tags:
 ## Setup
 
 ```bash
-# Install (requires Python 3.10+)
-uv tool install rdt-cli
-# Or: pip install rdt-cli
+# Install this fork (not the PyPI package — that still 403s)
+uv tool install git+https://github.com/asadtariq96/rdt-cli
+# Or: pipx install git+https://github.com/asadtariq96/rdt-cli
 
 # Upgrade
-uv tool upgrade rdt-cli
+uv tool install --force git+https://github.com/asadtariq96/rdt-cli
 ```
 
 ## Authentication
@@ -41,10 +41,12 @@ If `AUTH_NEEDED`, proceed to Step 1.
 
 ### Step 1: Guide user to authenticate
 
-Ensure user is logged into reddit.com in a supported browser (Chrome, Firefox, Edge, Brave, Arc, Chromium, Opera, Vivaldi, Safari, LibreWolf). Then:
+Ensure user is logged into reddit.com in a supported browser (Chromium, Chrome, Firefox, Edge, Brave). Then:
 
 ```bash
 rdt login
+# Refresh a stale saved credential:
+rdt login --force
 ```
 
 Verify with:

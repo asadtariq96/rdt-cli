@@ -187,7 +187,7 @@ rdt-cli ships with a [`SKILL.md`](./SKILL.md) that teaches AI agents how to use 
 ### [Skills CLI](https://github.com/vercel-labs/skills) (Recommended)
 
 ```bash
-npx skills add jackwener/rdt-cli
+npx skills add asadtariq96/rdt-cli -g
 ```
 
 | Flag | Description |
@@ -200,7 +200,7 @@ npx skills add jackwener/rdt-cli
 
 ```bash
 mkdir -p .agents/skills
-git clone git@github.com:jackwener/rdt-cli.git .agents/skills/rdt-cli
+git clone git@github.com:asadtariq96/rdt-cli.git .agents/skills/rdt-cli
 ```
 
 ### ~~OpenClaw / ClawHub~~ (Deprecated)
@@ -380,7 +380,7 @@ rdt-cli 自带 [`SKILL.md`](./SKILL.md)，让 AI Agent 能自动学习并使用�
 ### [Skills CLI](https://github.com/vercel-labs/skills)（推荐）
 
 ```bash
-npx skills add jackwener/rdt-cli
+npx skills add asadtariq96/rdt-cli -g
 ```
 
 | 参数 | 说明 |
@@ -393,7 +393,7 @@ npx skills add jackwener/rdt-cli
 
 ```bash
 mkdir -p .agents/skills
-git clone git@github.com:jackwener/rdt-cli.git .agents/skills/rdt-cli
+git clone git@github.com:asadtariq96/rdt-cli.git .agents/skills/rdt-cli
 ```
 
 ### ~~OpenClaw / ClawHub~~（已过时）
