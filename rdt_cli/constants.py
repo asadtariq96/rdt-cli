@@ -71,6 +71,9 @@ HEADERS = {
 # ── Cookie keys required for authenticated sessions ─────────────────
 REQUIRED_COOKIES = {"reddit_session"}
 
+# Chromium first: Arch/Omarchy and many Linux defaults use it, not Chrome.
+BROWSER_COOKIE_FNS = ("chromium", "chrome", "firefox", "edge", "brave")
+
 # ── Sort options ────────────────────────────────────────────────────
 SORT_OPTIONS = ["hot", "new", "top", "rising", "controversial", "best"]
 

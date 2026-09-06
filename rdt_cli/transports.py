@@ -7,7 +7,7 @@ import random
 import time
 from typing import Any
 
-import httpx
+import requests
 
 from .config import RuntimeConfig
 from .constants import BASE_URL
@@ -42,20 +42,27 @@ class BaseTransport:
         self._max_retries = config.max_retries
         self._last_request_time = 0.0
         self._request_count = 0
-        self._http = httpx.Client(
-            base_url=BASE_URL,
-            headers=self.default_headers(),
-            cookies=session.cookies,
-            follow_redirects=True,
-            timeout=httpx.Timeout(config.timeout),
-        )
+        # Reddit fingerprints the httpx TLS/HTTP stack and returns 403
+        # "Blocked" even with a valid reddit_session. urllib3/requests pass.
+        self._http = requests.Session()
+        self._http.headers.update(self.default_headers())
+        self._http.cookies.update(session.cookies)
+        self._http.max_redirects = 10
 
     def close(self) -> None:
         self._http.close()
 
     @property
-    def client(self) -> httpx.Client:
+    def client(self) -> requests.Session:
         return self._http
+
+    @staticmethod
+    def _absolute_url(url: str) -> str:
+        if url.startswith("http://") or url.startswith("https://"):
+            return url
+        if url.startswith("/"):
+            return BASE_URL + url
+        return f"{BASE_URL}/{url}"
 
     @property
     def request_count(self) -> int:
@@ -74,7 +81,7 @@ class BaseTransport:
                 jitter += random.uniform(2.0, 5.0)
             time.sleep(self._request_delay - elapsed + jitter)
 
-    def _merge_response_cookies(self, resp: httpx.Response) -> None:
+    def _merge_response_cookies(self, resp: requests.Response) -> None:
         for name, value in resp.cookies.items():
             if not value:
                 continue
@@ -85,6 +92,9 @@ class BaseTransport:
     def request(self, method: str, url: str, **kwargs: Any) -> Any:
         self._rate_limit_delay()
         last_exc: Exception | None = None
+        url = self._absolute_url(url)
+        kwargs.setdefault("timeout", self.config.timeout)
+        kwargs.setdefault("allow_redirects", True)
 
         for attempt in range(self._max_retries):
             t0 = time.time()
@@ -131,7 +141,7 @@ class BaseTransport:
                 if not text.strip():
                     return {}
                 return resp.json()
-            except (httpx.TimeoutException, httpx.NetworkError) as exc:
+            except (requests.Timeout, requests.ConnectionError) as exc:
                 last_exc = exc
                 wait = (2**attempt) + random.uniform(0, 1)
                 logger.warning("Network error: %s, retrying in %.1fs", exc, wait)

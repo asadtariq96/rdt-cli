@@ -14,15 +14,17 @@ from ._common import (
 
 
 @click.command()
-def login() -> None:
+@click.option("--force", is_flag=True, help="Re-extract cookies even if a credential is already saved")
+def login(force: bool) -> None:
     """Extract browser cookies for Reddit authentication"""
     from ..auth import extract_browser_credential, get_credential
 
-    # Check if already logged in
-    cred = get_credential()
-    if cred:
-        console.print("[green]✅ Already authenticated[/green]")
-        return
+    if not force:
+        cred = get_credential()
+        if cred:
+            console.print("[green]✅ Already authenticated[/green]")
+            console.print("  [dim]Use 'rdt login --force' to refresh cookies from the browser[/dim]")
+            return
 
     console.print("[dim]🔍 Searching for Reddit cookies in browsers...[/dim]")
     cred = extract_browser_credential()

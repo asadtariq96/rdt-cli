@@ -128,6 +128,17 @@ class TestAuthCommands:
             assert result.exit_code == 0
             assert "Already" in result.output or "✅" in result.output
 
+    def test_login_force_reextracts(self):
+        from rdt_cli.auth import Credential
+        existing = Credential(cookies={"reddit_session": "old"})
+        fresh = Credential(cookies={"reddit_session": "new", "loid": "x"})
+        with patch("rdt_cli.auth.get_credential", return_value=existing):
+            with patch("rdt_cli.auth.extract_browser_credential", return_value=fresh) as mock_extract:
+                result = runner.invoke(cli, ["login", "--force"])
+        assert result.exit_code == 0
+        mock_extract.assert_called_once()
+        assert "2 cookies" in result.output
+
     def test_login_not_authenticated_no_browser(self):
         with patch("rdt_cli.auth.get_credential", return_value=None):
             with patch("rdt_cli.auth.extract_browser_credential", return_value=None):
@@ -182,6 +193,12 @@ class TestConstants:
     def test_required_cookies(self):
         from rdt_cli.constants import REQUIRED_COOKIES
         assert "reddit_session" in REQUIRED_COOKIES
+
+    def test_browser_cookie_fns_include_chromium(self):
+        from rdt_cli.constants import BROWSER_COOKIE_FNS
+        assert BROWSER_COOKIE_FNS[0] == "chromium"
+        assert "chrome" in BROWSER_COOKIE_FNS
+        assert "firefox" in BROWSER_COOKIE_FNS
 
     def test_search_sort_options(self):
         from rdt_cli.constants import SEARCH_SORT_OPTIONS
