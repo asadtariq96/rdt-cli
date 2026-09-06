@@ -1,8 +1,13 @@
-# rdt-cli
+# rdt-cli (fork)
 
-[![CI](https://github.com/jackwener/rdt-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/jackwener/rdt-cli/actions/workflows/ci.yml)
-[![PyPI version](https://img.shields.io/pypi/v/rdt-cli.svg)](https://pypi.org/project/rdt-cli/)
-[![Python](https://img.shields.io/badge/python-%3E%3D3.10-blue.svg)](https://pypi.org/project/rdt-cli/)
+> **This is a fork of [public-clis/rdt-cli](https://github.com/public-clis/rdt-cli).**  
+> Install from **this repo**, not PyPI. Upstream still uses `httpx` (Reddit returns `403 Blocked` on valid cookies) and does not read Chromium cookies.
+
+**What this fork changes**
+
+- Uses `requests` instead of `httpx`, so Reddit accepts the TLS fingerprint ([upstream #13](https://github.com/public-clis/rdt-cli/issues/13))
+- `rdt login` extracts cookies from **Chromium** (Arch/Omarchy default), then Chrome, Firefox, Edge, Brave
+- `rdt login --force` re-reads browser cookies even if a credential file already exists
 
 A CLI for Reddit — browse feeds, read posts, search, and interact via reverse-engineered API 📖
 
@@ -38,24 +43,23 @@ A CLI for Reddit — browse feeds, read posts, search, and interact via reverse-
 ## Installation
 
 ```bash
-# Recommended: uv tool (fast, isolated)
-uv tool install rdt-cli
+# Recommended: install this fork (not the PyPI package)
+uv tool install git+https://github.com/asadtariq96/rdt-cli
 
 # Or: pipx
-pipx install rdt-cli
+pipx install git+https://github.com/asadtariq96/rdt-cli
 ```
 
-Upgrade to the latest version:
+Upgrade this fork:
 
 ```bash
-uv tool upgrade rdt-cli
-# Or: pipx upgrade rdt-cli
+uv tool install --force git+https://github.com/asadtariq96/rdt-cli
 ```
 
 From source:
 
 ```bash
-git clone git@github.com:jackwener/rdt-cli.git
+git clone git@github.com:asadtariq96/rdt-cli.git
 cd rdt-cli
 uv sync
 ```
@@ -65,6 +69,7 @@ uv sync
 ```bash
 # ─── Auth ─────────────────────────────────────────
 rdt login                             # Extract cookies from browser
+rdt login --force                     # Re-extract even if already saved
 rdt status                            # Check login status
 rdt status --json                     # Structured JSON envelope
 rdt whoami                            # Detailed profile (karma, account age)
@@ -293,25 +298,16 @@ The built-in Gaussian jitter delay (~1s between requests) is intentional to mimi
 
 ## 安装
 
-```bash
-# 推荐：uv tool（快速、隔离环境）
-uv tool install rdt-cli
-
-# 或者：pipx
-pipx install rdt-cli
-```
-
-升级到最新版本：
+这是 [public-clis/rdt-cli](https://github.com/public-clis/rdt-cli) 的 fork：用 `requests` 规避 Reddit 对 httpx 的 403，并从 Chromium 读取 Cookie。请从本仓库安装，不要用 PyPI 上的 `rdt-cli`。
 
 ```bash
-uv tool upgrade rdt-cli
-# 或：pipx upgrade rdt-cli
+uv tool install git+https://github.com/asadtariq96/rdt-cli
 ```
 
 从源码安装：
 
 ```bash
-git clone git@github.com:jackwener/rdt-cli.git
+git clone git@github.com:asadtariq96/rdt-cli.git
 cd rdt-cli
 uv sync
 ```
@@ -321,6 +317,7 @@ uv sync
 ```bash
 # 认证
 rdt login                             # 从浏览器提取 Cookie
+rdt login --force                     # 强制重新提取
 rdt status                            # 检查登录状态
 rdt whoami                            # 查看用户资料
 rdt logout                            # 清除缓存的 Cookie
